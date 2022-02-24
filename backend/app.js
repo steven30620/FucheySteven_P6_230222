@@ -2,6 +2,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyparser = require("body-parser");
 const app = express();
+var multer = require('multer');
+var upload = multer();
 const saucesRoutes = require("./routes/sauces");
 const userRoutes = require("./routes/user");
 
@@ -26,7 +28,10 @@ app.use((req, res, next) => {
 	next();
 });
 
+app.use(express.static('./public'));
+
 app.use(bodyparser.json());
+app.use(bodyparser.urlencoded({ extended: true }));
 app.use("/api/sauces", saucesRoutes);
 app.use("/api/auth", userRoutes);
 

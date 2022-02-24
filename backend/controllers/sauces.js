@@ -1,12 +1,14 @@
 const Sauce = require("../models/sauce");
 
 exports.createSauce = (req, res, next) => {
-	console.log(req.body);
-	/*const sauceJson = JSON.parse(req.body.sauce);
-	console.log(sauceJson);
+	console.log(req.file)
+	const otherFields = { dislikes : 0, likes : 0, usersLiked : [], usersDisliked : [], imageUrl : 'http://localhost:3000/' + req.file.path };
+	const sauceJson = JSON.parse(req.body.sauce);
+
 	const sauce = new Sauce({
-		...sauceJson,
+		...sauceJson, ...otherFields
 	});
+
 	sauce
 		.save()
 		.then(() => {
@@ -18,7 +20,7 @@ exports.createSauce = (req, res, next) => {
 			res.status(400).json({
 				error: error,
 			});
-		});*/
+		});
 };
 
 exports.getOneThing = (req, res, next) => {
