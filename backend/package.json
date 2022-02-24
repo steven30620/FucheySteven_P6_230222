@@ -16,5 +16,13 @@
   "bugs": {
     "url": "https://github.com/steven30620/FucheySteven_P6_230222/issues"
   },
-  "homepage": "https://github.com/steven30620/FucheySteven_P6_230222#readme"
+  "homepage": "https://github.com/steven30620/FucheySteven_P6_230222#readme",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "body-parser": "^1.19.2",
+    "express": "^4.17.3",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.2.3",
+    "mongoose-unique-validator": "^3.0.0"
+  }
 }
