@@ -2,14 +2,19 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyparser = require("body-parser");
 const app = express();
-var multer = require('multer');
-var upload = multer();
+const multer = require("multer");
 const saucesRoutes = require("./routes/sauces");
 const userRoutes = require("./routes/user");
+const path = require("path");
+require("dotenv").config();
 
 mongoose
 	.connect(
-		"mongodb+srv://steven:testtest@clustertest.4yuc7.mongodb.net/clusterTest",
+		"mongodb+srv://" +
+			process.env.DB_USER +
+			":" +
+			process.env.DB_PASS +
+			"@clustertest.4yuc7.mongodb.net/clusterTest",
 		{ useNewUrlParser: true, useUnifiedTopology: true }
 	)
 	.then(() => console.log("Connexion à MongoDB réussie !"))
@@ -28,11 +33,12 @@ app.use((req, res, next) => {
 	next();
 });
 
-app.use(express.static('./public'));
+app.use(express.static("./public"));
 
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({ extended: true }));
 app.use("/api/sauces", saucesRoutes);
 app.use("/api/auth", userRoutes);
+app.use("/images", express.static(path.join(__dirname, "images")));
 
 module.exports = app;
