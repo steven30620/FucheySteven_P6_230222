@@ -3,21 +3,23 @@ const Sauce = require("../models/sauce");
 const fs = require("fs");
 
 exports.createSauce = (req, res, next) => {
+	//création d'une sauce avec initialisation des likes et dislike et de leurs tableaux
 	const otherFields = {
 		dislikes: 0,
 		likes: 0,
 		usersLiked: [],
 		usersDisliked: [],
-		imageUrl: "http://localhost:3000/" + req.file.path.replace("\\", "/"),
+		imageUrl: "http://localhost:3000/" + req.file.path.replace("\\", "/"), //ajout de l'image dans la base de données
 	};
 	const sauceJson = JSON.parse(req.body.sauce);
 
 	const sauce = new Sauce({
+		// création d'un nouvel objet sauce avec tout les champs correspondant
 		...sauceJson,
 		...otherFields,
 	});
 
-	sauce
+	sauce //enregistrement de la sauce dans la base de données
 		.save()
 		.then(() => {
 			res.status(201).json({
@@ -32,7 +34,9 @@ exports.createSauce = (req, res, next) => {
 };
 
 exports.getOneSauce = (req, res, next) => {
+	//recherche d'une sauce dans la BdD
 	Sauce.findOne({
+		// recherche de la sauce qui correspond a l'id de la sauce séléctionné
 		_id: req.params.id,
 	})
 		.then((sauce) => {
@@ -45,7 +49,8 @@ exports.getOneSauce = (req, res, next) => {
 		});
 };
 exports.modifySauce = (req, res, next) => {
-	const sauceObject = req.file
+	// modifie la sauce séléctioné
+	const sauceObject = req.file // si une image est ratacher a la sauce, on la recherche dans la base de donné pour la supprimer et ajouter la nouvelle
 		? {
 				...JSON.parse(req.body.sauce),
 				imageUrl: `${req.protocol}://${req.get("host")}/images/${
@@ -54,6 +59,7 @@ exports.modifySauce = (req, res, next) => {
 		  }
 		: { ...req.body };
 	Sauce.updateOne(
+		//recherche la sauce qui dois être modifié et remplace son objet par le nouveau
 		{ _id: req.params.id },
 		{ ...sauceObject, _id: req.params.id }
 	)
@@ -62,12 +68,14 @@ exports.modifySauce = (req, res, next) => {
 };
 
 exports.deleteSauce = (req, res, next) => {
+	// trouve la sauce séléctionné et la supprime
 	Sauce.findOne({ _id: req.params.id })
 		.then((sauce) => {
 			const filename = sauce.imageUrl.split("/images/")[1];
 			console.log(sauce.imageUrl);
 			fs.unlink(`images/${filename}`, () => {
-				Sauce.deleteOne({ _id: req.params.id })
+				//methode permettant la suppression de l'image de la BdD
+				Sauce.deleteOne({ _id: req.params.id }) //suppression de la sauce qui correspond a l'id de la requête de la BdD
 					.then(() =>
 						res.status(200).json({ message: "Objet supprimé !" })
 					)
@@ -78,9 +86,10 @@ exports.deleteSauce = (req, res, next) => {
 };
 
 exports.getAllSauces = (req, res, next) => {
-	Sauce.find()
+	//récupération de toute les sauces de la BdD pour les afficher sur la pages
+	Sauce.find() // find retourne une promesse,
 		.then((sauces) => {
-			res.status(200).json(sauces);
+			res.status(200).json(sauces); //retourne le tableau des sauces renvoyé par la méthode find
 		})
 		.catch((error) => {
 			res.status(400).json({
@@ -90,12 +99,14 @@ exports.getAllSauces = (req, res, next) => {
 };
 
 exports.setLike = async (req, res, next) => {
-	const likeStatus = req.body.like;
-	const userId = req.body.userId;
-	const sauceId = req.params.id;
-	const oldSauce = await Sauce.findById({ _id: sauceId });
+	// fonction qui gère les likes
+	const likeStatus = req.body.like; // on récupère les info des likes de la sauce
+	const userId = req.body.userId; //on récupère l'id de l'user qui like
+	const sauceId = req.params.id; //on récupère l'id de la sauce liké
+	const oldSauce = await Sauce.findById({ _id: sauceId }); //on attend la réponse de l'id correspondante dans la BdD
 
 	if (likeStatus == 1 && oldSauce.userLiked.indexOf(userId) == -1) {
+		// si l'utilisateur like la sauce et qu
 		const userIndex = oldSauce.userDisliked.indexOf(userId);
 		if (userIndex != -1) {
 			oldSauce.userDisliked.splice(userIndex, 1);
@@ -120,6 +131,7 @@ exports.setLike = async (req, res, next) => {
 	}
 
 	const newSauce = new Sauce({
+		//remlpace les information des like dans la sauce
 		_id: sauceId,
 		likes: oldSauce.userLiked.length,
 		userLiked: oldSauce.userLiked,
@@ -127,7 +139,7 @@ exports.setLike = async (req, res, next) => {
 		userDisliked: oldSauce.userDisliked,
 	});
 
-	Sauce.updateOne({ _id: sauceId }, newSauce)
+	Sauce.updateOne({ _id: sauceId }, newSauce) //modifie les info dans la BdD de la sauce
 		.then(() => {
 			res.status(201).json({
 				message: "Sauce updated successfully!",

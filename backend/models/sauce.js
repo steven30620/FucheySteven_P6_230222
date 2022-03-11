@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 const sauceSchema = mongoose.Schema({
+	//chaque sauces contiendras les information suivantes
 	userId: { type: String, require: true },
 	name: { type: String, required: true },
 	manufacturer: { type: String, required: true },

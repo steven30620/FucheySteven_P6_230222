@@ -10,7 +10,7 @@ exports.login = (req, res, next) => {
 					.status(401)
 					.json({ error: "Utilisateur non trouvé !" });
 			}
-			bcrypt
+			bcrypt //module qui vas comparer le mot de passe hashé
 				.compare(req.body.password, user.password)
 				.then((valid) => {
 					if (!valid) {
@@ -21,9 +21,10 @@ exports.login = (req, res, next) => {
 					res.status(200).json({
 						userId: user._id,
 						token: jwt.sign(
-							{ userId: user._id },
-							"RANDOM_TOKEN_SECRET",
-							{ expiresIn: "24h" }
+							//fonction sign prend 2 argument
+							{ userId: user._id }, // premier argument est ce que l'on veux encoder, ici c'est l'identifiant, pour être sur que la requête correspond a l'user ID
+							"RANDOM_TOKEN_SECRET82qsd28qsd5qs7d764gfdgljkuqsf51dfg6571sdf35qsfpougjousodf", //le deuxième argument est la clée secret pour l'encodage,
+							{ expiresIn: "24h" } // chaque token dure 24h
 						),
 					});
 				})
@@ -33,7 +34,7 @@ exports.login = (req, res, next) => {
 };
 
 exports.signup = (req, res, next) => {
-	bcrypt
+	bcrypt // création d'un mot de passe hashé
 		.hash(req.body.password, 10)
 		.then((hash) => {
 			const user = new User({
