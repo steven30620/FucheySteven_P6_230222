@@ -6,11 +6,11 @@ const auth = require("./../middleware/auth");
 const rateLimit = require("./../middleware/rateLimit");
 
 //toutes les routes sauces de l'API, contien les midleware auth pour que ce sois sécurisé.
-router.get("/", rateLimit, auth, saucesCtrl.getAllSauces);
-router.post("/", rateLimit, auth, multer, saucesCtrl.createSauce);
+router.get("/", auth, saucesCtrl.getAllSauces);
+router.post("/", auth, multer, saucesCtrl.createSauce);
 router.get("/:id", auth, saucesCtrl.getOneSauce);
-router.put("/:id", rateLimit, auth, multer, saucesCtrl.modifySauce);
-router.delete("/:id", rateLimit, auth, saucesCtrl.deleteSauce);
-router.post("/:id/like", rateLimit, auth, saucesCtrl.setLike);
+router.put("/:id", auth, multer, saucesCtrl.modifySauce);
+router.delete("/:id", auth, saucesCtrl.deleteSauce);
+router.post("/:id/like", auth, saucesCtrl.setLike);
 
 module.exports = router;
