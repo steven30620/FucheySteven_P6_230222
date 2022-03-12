@@ -7,6 +7,4 @@ const limiter = rateLimit({
 	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
 
-console.log("ça marche ");
-
 module.exports = limiter;

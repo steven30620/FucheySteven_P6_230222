@@ -8,7 +8,8 @@ const userRoutes = require("./routes/user");
 const path = require("path");
 require("dotenv").config();
 const limiter = require("./middleware/rateLimit");
-// const maskData = require("./middleware/maskData");
+const helmet = require("helmet");
+const sanitize = require("express-mongo-sanitize");
 
 mongoose //module permettant la connexion a mongoose
 	.connect(
@@ -38,7 +39,8 @@ app.use((req, res, next) => {
 	);
 	next();
 });
-
+app.use(helmet());
+app.use(sanitize());
 app.use(express.static("./public"));
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({ extended: true }));
@@ -46,6 +48,5 @@ app.use("/api/sauces", saucesRoutes);
 app.use("/api/auth", userRoutes);
 app.use("/images", express.static(path.join(__dirname, "images")));
 app.use(limiter);
-// app.use(maskData);
 
 module.exports = app;

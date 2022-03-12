@@ -1,10 +1,20 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
-const maskEmail = require("./../middleware/maskData");
+
+const MaskData = require("maskdata");
+//maskdata is a Node.js module to mask various kinds of data. With the help of maskdata, you can mask email, phone number, card number, JSON fields, password etc..
+const emailMaskOptions = {
+	maskWith: "*",
+	unmaskedStartCharactersBeforeAt: 1,
+	unmaskedEndCharactersAfterAt: 2,
+	maskAtTheRate: false,
+};
 
 exports.login = (req, res, next) => {
-	User.findOne({ email: req.body.email })
+	User.findOne({
+		email: MaskData.maskEmail2(req.body.email, emailMaskOptions),
+	})
 		.then((user) => {
 			if (!user) {
 				return res
@@ -35,15 +45,13 @@ exports.login = (req, res, next) => {
 };
 
 exports.signup = (req, res, next) => {
-	const email = MaskData.req.body.email(email, emailMaskOptions);
-	email
-		.save()
-		.then(() => res.status(201).json({ message: "Utilisateur créé !" }));
+	const email = MaskData.maskEmail2(req.body.email, emailMaskOptions);
+
 	bcrypt // création d'un mot de passe hashé
 		.hash(req.body.password, 10)
 		.then((hash) => {
 			const user = new User({
-				email: req.body.email,
+				email: email,
 				password: hash,
 			});
 			user.save()
