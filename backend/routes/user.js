@@ -3,9 +3,10 @@ const router = express.Router();
 const userCtrl = require("../controllers/user");
 const auth = require("./../middleware/auth");
 const rateLimit = require("./../middleware/rateLimit");
+// const MaskData = require("./../middleware/maskData");
 //toutes les route concernant les user de l'API
 
-router.post("/signup", auth, userCtrl.signup);
-router.post("/login", auth, userCtrl.login);
+router.post("/signup", rateLimit, userCtrl.signup);
+router.post("/login", rateLimit, userCtrl.login);
 
 module.exports = router;

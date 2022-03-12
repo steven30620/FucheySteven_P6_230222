@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
+const maskEmail = require("./../middleware/maskData");
 
 exports.login = (req, res, next) => {
 	User.findOne({ email: req.body.email })
@@ -34,6 +35,10 @@ exports.login = (req, res, next) => {
 };
 
 exports.signup = (req, res, next) => {
+	const email = MaskData.req.body.email(email, emailMaskOptions);
+	email
+		.save()
+		.then(() => res.status(201).json({ message: "Utilisateur créé !" }));
 	bcrypt // création d'un mot de passe hashé
 		.hash(req.body.password, 10)
 		.then((hash) => {

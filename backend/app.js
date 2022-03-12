@@ -7,7 +7,8 @@ const saucesRoutes = require("./routes/sauces");
 const userRoutes = require("./routes/user");
 const path = require("path");
 require("dotenv").config();
-// const limiter = require("./middleware/rateLimit");
+const limiter = require("./middleware/rateLimit");
+// const maskData = require("./middleware/maskData");
 
 mongoose //module permettant la connexion a mongoose
 	.connect(
@@ -44,6 +45,7 @@ app.use(bodyparser.urlencoded({ extended: true }));
 app.use("/api/sauces", saucesRoutes);
 app.use("/api/auth", userRoutes);
 app.use("/images", express.static(path.join(__dirname, "images")));
-// app.use(limiter);
+app.use(limiter);
+// app.use(maskData);
 
 module.exports = app;
