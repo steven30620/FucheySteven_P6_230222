@@ -1,0 +1,9 @@
+pour acceder a mon espace mongo db
+email: steven30620@hotmail.fr
+password: clusterProjet6
+
+info pour le .env
+
+DB_PASS = testtest
+DB_USER = steven
+DB_ClusterNAME = clusterTest
