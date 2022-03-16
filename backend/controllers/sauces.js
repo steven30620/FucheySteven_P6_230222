@@ -58,6 +58,7 @@ exports.modifySauce = (req, res, next) => {
 				}`,
 		  }
 		: { ...req.body };
+
 	Sauce.updateOne(
 		//recherche la sauce qui dois être modifié et remplace son objet par le nouveau
 		{ _id: req.params.id },
@@ -72,7 +73,6 @@ exports.deleteSauce = (req, res, next) => {
 	Sauce.findOne({ _id: req.params.id })
 		.then((sauce) => {
 			const filename = sauce.imageUrl.split("/images/")[1];
-			console.log(sauce.imageUrl);
 			fs.unlink(`images/${filename}`, () => {
 				//methode permettant la suppression de l'image de la BdD
 				Sauce.deleteOne({ _id: req.params.id }) //suppression de la sauce qui correspond a l'id de la requête de la BdD

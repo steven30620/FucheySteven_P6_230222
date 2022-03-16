@@ -8,7 +8,7 @@ const userRoutes = require("./routes/user");
 const path = require("path");
 require("dotenv").config();
 const limiter = require("./middleware/rateLimit");
-const helmet = require("helmet");
+
 const sanitize = require("express-mongo-sanitize");
 
 mongoose //module permettant la connexion a mongoose
@@ -26,8 +26,8 @@ mongoose //module permettant la connexion a mongoose
 	.then(() => console.log("Connexion à MongoDB réussie !"))
 	.catch(() => console.log("Connexion à MongoDB échouée !"));
 
+//modèle de la requêtre gérant le CORS
 app.use((req, res, next) => {
-	//modèle de la requêtre gérant le CORS
 	res.setHeader("Access-Control-Allow-Origin", "*");
 	res.setHeader(
 		"Access-Control-Allow-Headers",
@@ -39,7 +39,7 @@ app.use((req, res, next) => {
 	);
 	next();
 });
-app.use(helmet());
+
 app.use(sanitize());
 app.use(express.static("./public"));
 app.use(bodyparser.json());
